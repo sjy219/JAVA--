@@ -1,0 +1,5 @@
+转到某个函数定义：ctrl+alt+B
+
+mySql数据库问题：
+    1.关于WARN: Establishing SSL connection without server‘s identity的解决方案
+        url: jdbc:mysql://localhost:3306/test1?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
