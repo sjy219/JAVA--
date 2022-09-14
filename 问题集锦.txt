@@ -3,3 +3,120 @@
 mySql数据库问题：
     1.关于WARN: Establishing SSL connection without server‘s identity的解决方案
         url: jdbc:mysql://localhost:3306/test1?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+    2.1.新建用户。
+
+      //登录MYSQL
+      @>mysql -u root -p
+      @>密码
+      //创建用户
+      mysql> insert into mysql.user(Host,User,Password) values("localhost","phplamp",password("1234"));
+      //刷新系统权限表
+      mysql>flush privileges;
+      这样就创建了一个名为：phplamp  密码为：1234  的用户。
+
+      然后登录一下。
+
+      mysql>exit;
+      @>mysql -u phplamp -p
+      @>输入密码
+      mysql>登录成功
+
+      2.为用户授权。
+
+      //登录MYSQL（有ROOT权限）。我里我以ROOT身份登录.
+      @>mysql -u root -p
+      @>密码
+      //首先为用户创建一个数据库(phplampDB)
+      mysql>create database phplampDB;
+      //授权phplamp用户拥有phplamp数据库的所有权限。
+      >grant all privileges on phplampDB.* to phplamp@localhost identified by '1234';
+      //刷新系统权限表
+      mysql>flush privileges;
+      mysql>其它操作
+
+
+
+      3.删除用户。
+      @>mysql -u root -p
+      @>密码
+      mysql>DELETE FROM user WHERE User="phplamp" and Host="localhost";
+      mysql>flush privileges;
+      //删除用户的数据库
+      mysql>drop database phplampDB;
+
+      4.修改指定用户密码。
+      @>mysql -u root -p
+      @>密码
+      mysql>update mysql.user set password=password('新密码') where User="phplamp" and Host="localhost";
+      mysql>flush privileges;
+
+    3.1、
+      查看系统中是否已安装mysql
+      rpm -qa |grep mysql
+     注：返回空值说明没有安装mysql，在新版本的CentOS7中，默认的数据库已更新为了Mariadb，而非 MySQL，所以执行 yum install mysql 命令只是更新Mariadb数据库，并不会安装 MySQL 。
+
+     2、查看mariadb版本
+     rpm -qa|grep -i mariadb
+
+     3、卸载mariadb
+     rpm -qa|grep mariadb|xargs rpm -e --nodeps
+
+     4、确认是否卸载完成
+     rpm -qa|grep -i mariadb
+
+     5、下载安装包文件
+     wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+
+     6、安装mysql-community-release-el7-5.noarch.rpm包
+     rpm -ivh mysql-community-release-el7-5.noarch.rpm
+
+     安装完成之后，会在 /etc/yum.repos.d/ 目录下新增 mysql-community.repo 、mysql-community-source.repo 两个 yum 源文件。
+     执行 yum repolist all | grep mysql 命令查看可用的 mysql 安装文件。
+
+     7、安装mysql
+     yum install -y mysql-server
+     chown mysql:mysql -R /var/lib/mysql
+     mysqld --initialize  //初始化mysql
+
+     8、查看是否安装成功
+     rpm -qa | grep mysql
+
+     9、启动mysql服务
+     systemctl start mysqld.service #启动 mysql
+     systemctl restart mysqld.service #重启 mysql
+     systemctl stop mysqld.service #停止 mysql
+     systemctl enable mysqld.service #设置 mysql 开机启动
+
+     mysql常用文件路径：
+     /etc/my.cnf 　　这是mysql的主配置文件
+     /var/lib/mysql 　　mysql数据库的数据库文件存放位置
+     /var/logs/mysqld.log　　数据库的日志输出存放位置
+
+     10、设置密码
+     mysql5.6 安装完成后，它的 root 用户的密码默认是空的，我们需要及时用 mysql 的 root 用户登录（第一次直接回车，不用输入密码），并修改密码
+     # mysql -u root
+     mysql> use mysql;
+     mysql> update user set password=PASSWORD("111111") where User='root';
+     mysql> flush privileges;
+
+     11、设置远程主机登陆
+     mysql> CREATE USER 'abc'@'172.29.1.%' IDENTIFIED BY '111111';
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'abc'@'172.29.1.%' IDENTIFIED BY '111111';
+
+     执行以下命令，为root 用户添加远程登录的能力。
+     mysql> GRANT ALL PRIVILEGES ON *.* TO root@"localhost" IDENTIFIED BY "111111";
+
+     注：
+     mysql修改密码后无法登陆
+     systemctl stop mysql
+     mysqld_safe --user=mysql --skip-grant-tables --skip-networking &
+     mysql -u root mysql
+     mysql> UPDATE user SET Password=PASSWORD(’newpassword’) where USER=’root’;
+     mysql> FLUSH PRIVILEGES;
+     mysql> quit
+     systemctl restart mysql
+     若启动报错，`ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)`
+     查看mysql是否已启动过，ps -ef |grep mysql查看，若有进程存在，kill pid 后重启mysql
+     mysql -uroot -p
+     Enter password: <输入新设的密码newpassword>
+     mysql>
