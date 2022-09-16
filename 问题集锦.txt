@@ -77,15 +77,23 @@ mySql数据库问题：
      yum install -y mysql-server
      chown mysql:mysql -R /var/lib/mysql
      mysqld --initialize  //初始化mysql
+     解决报错问题(GPG)：
+        # rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+        # yum install -y  mysql-community-server
 
      8、查看是否安装成功
      rpm -qa | grep mysql
 
      9、启动mysql服务
      systemctl start mysqld.service #启动 mysql
+     service mysqld status #查看mysql启动状态
      systemctl restart mysqld.service #重启 mysql
      systemctl stop mysqld.service #停止 mysql
      systemctl enable mysqld.service #设置 mysql 开机启动
+        开机启动：
+        # systemctl enable mysqld
+        # systemctl daemon-reload
+
 
      mysql常用文件路径：
      /etc/my.cnf 　　这是mysql的主配置文件
@@ -93,11 +101,18 @@ mySql数据库问题：
      /var/logs/mysqld.log　　数据库的日志输出存放位置
 
      10、设置密码
+
      mysql5.6 安装完成后，它的 root 用户的密码默认是空的，我们需要及时用 mysql 的 root 用户登录（第一次直接回车，不用输入密码），并修改密码
      # mysql -u root
      mysql> use mysql;
      mysql> update user set password=PASSWORD("111111") where User='root';
      mysql> flush privileges;
+        获取临时密码：
+        # cat /var/log/mysqld.log  | grep password
+        更改密码：
+        mysql> alter user 'root'@'localhost'  identified by 'Root123..';  --修改密码（强密码）
+        mysql> flush privileges;                                          --刷新，立即生效
+        mysql> select user,host from mysql.user;                          --查看数据库中账号信息
 
      11、设置远程主机登陆
      mysql> CREATE USER 'abc'@'172.29.1.%' IDENTIFIED BY '111111';
@@ -120,3 +135,27 @@ mySql数据库问题：
      mysql -uroot -p
      Enter password: <输入新设的密码newpassword>
      mysql>
+
+    4.Mysql控制台命令
+        mysql --version//查询版本（mysql外部）
+        mysql> show global variables like 'version/port';(mysql内部）
+
+    5.查看linux系统版本
+        cat /etc/redhat-release
+        rm -rf 文件夹名/文件 //删除文件
+        #查询所有已安装的软件
+        rpm -q -a
+
+        #所以需要过滤多自己需要卸载的那个程序，使用grep进行过滤
+        rpm -q -a | grep 'python'
+        # 模糊查询
+        rpm -q -a | grep java*
+
+        #卸载python
+        rpm -e  [package name]
+        #例子
+        rpm -e python-perf-3.10.0-957.el7.x86_64
+        rpm -e [package name] -nodeps//强制卸载
+        rpm -ql [package name] //查看软件安装目录
+
+

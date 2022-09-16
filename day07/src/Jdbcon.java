@@ -6,7 +6,9 @@ import java.util.logging.ErrorManager;
 public class Jdbcon {
 
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/example?useSSL=false";
+    //static final String DB_URL = "jdbc:mysql://localhost:3306/example?useSSL=false";
+    static final String DB_URL =
+            "jdbc:mysql://localhost:3306/example?useSSL=false";
     static final String USER = "root";
     static final String PASS = "root";
 
@@ -30,7 +32,7 @@ public class Jdbcon {
             stmt = conn.prepareStatement(sql);
 
             //将值绑定到参数，参数从左到右序号为1，2...
-            stmt.setInt(1,22);
+            stmt.setInt(1,202);
             stmt.setInt(2,1);
 
             //更新ID为1的同学的年龄
