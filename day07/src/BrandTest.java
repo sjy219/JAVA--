@@ -26,8 +26,8 @@ public class BrandTest {
         //建立查询对象statement
         PreparedStatement stmt = conn.prepareStatement(sql);
         //建立结果集对象
+        //ResultSet rs = stmt.executeQuery();
         ResultSet rs = stmt.executeQuery();
-
         //遍历结果集
 
         Brand brand = new Brand();

@@ -16,7 +16,7 @@ public class BrandUpdate {
         //建立查询语句对象
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, "hello again");
-        pstmt.setString(2, "CorPest.co");
+        pstmt.setString(2, "spTom.co");
 
         int count = pstmt.executeUpdate();
         System.out.println(count);
