@@ -20,6 +20,8 @@ public class Server02 {
         //发送反馈到客户端
         BufferedWriter os = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
         os.write("我是来自于服务器端的反馈");
+        os.newLine();
+        os.flush();
         //释放资源
         os.close();
         s.close();
